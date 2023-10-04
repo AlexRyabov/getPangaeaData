@@ -6,7 +6,7 @@ This script is intended to load chlorophyll, nutrient and CTD data from the **Pa
 
 ## Preparation
 
-Open R and install the **pangear** package
+Open R and install the **pangaear** package
 
 Download all files from this repository and create a raw_data\archive folder in the folder with these files. This folder will contain the raw data from **Pangaea**. Once the data has been downloaded, this folder can be deleted. 
 
