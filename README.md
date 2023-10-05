@@ -9,7 +9,6 @@ Merle Schütt merle.schuett@posteo.de
 
 Alexey Ryabov 
 
-
 ## Preparation
 
 Open R and install the **pangaear** package
