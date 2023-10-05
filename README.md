@@ -1,8 +1,14 @@
 # getPangaeaData
 Dowload CTD, Nutrients and chl data from Pangaea database.
-Thanks @Merle Schütt
 
 This script is intended to load groups of data, like chlorophyll, nutrient and CTD data, from the **Pangaea** database and merge the data from each group into a single file.  
+
+**Contributors**
+
+Merle Schütt merle.schuett@posteo.de
+
+Alexey Ryabov 
+
 
 ## Preparation
 
