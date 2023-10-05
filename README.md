@@ -8,7 +8,7 @@ This script is intended to load groups of data, like chlorophyll, nutrient and C
 
 Open R and install the **pangaear** package
 
-Download all files from this repository and create a raw_data\archive folder in the folder with these files. This folder will contain the raw data from **Pangaea**. Once the data has been downloaded, this folder can be deleted. 
+Download all files from this repository. 
 
 If necessary, edit two Excel tables containing IDs of files to be downloaded and matches between column names in **Pangaea** and local database. 
 The **dataset_links.xlsx** file stores the list of datasets from **Pangaea** to be downloaded. In this file, you need to fill in the column ID (dataset number in **Pangaea**) and data_collection (Chlorophyll, CTD or nutrients). The other columns are optional. 
@@ -29,6 +29,8 @@ Run the script **HG_create_or_update_collection.R** (must be in the working dire
 - data_selected_nutrients/main_data/ main_nutrients.csv 
 
 these files also have an ID column which refers to **Pangaea** ID.
+
+- raw_data/archive folder is also creted. This folder will contain the raw data from **Pangaea**. Once the data has been downloaded, this folder can be deleted. 
 
 ## Notes
 Note that the script does not remove duplicates, so if the same data is included in several **Pangaea** datasets and these datasets are included in **dataset_links.xlsx** file, these data will appear several times in the final files, but will have different **Pangaea** ID.

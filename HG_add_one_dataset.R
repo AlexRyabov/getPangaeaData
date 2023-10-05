@@ -1,4 +1,4 @@
-# date        2023-08-20
+# date        2023-10-05
 # project     
 # R Version   4.2.1 (2022-06-23 ucrt)
 # R packages  /
@@ -47,10 +47,13 @@ if (!dir.exists(paste0(dir_name_collection, "/main_data"))){
 if (!dir.exists(dir_name_raw)){
   dir.create(dir_name_raw)}        # folder for collecting raw data
 
+if (!dir.exists(dir_name_archive)){
+  dir.create(dir_name_archive)}
+
 # create the meta data if it does not exist 
 if (!file.exists(file_name_meta_data)){
   
-  # initializing meta data table
+  # initializing meta data.frame
   meta_data = data.frame(ID          = "", 
                          parentID    = "",
                          cruise      = "",
@@ -73,7 +76,9 @@ if (!file.exists(file_name_meta_data)){
 } else {
   
   # load existing meta data
-  meta_data = read.csv(file_name_meta_data)
+  meta_data = read.table(file_name_meta_data, 
+                         sep = sep_for_main_data, 
+                         header = TRUE)
   
   # add a new entry and get the index
   ind_ID = dim(meta_data)[1] + 1
@@ -130,18 +135,18 @@ if ('depth' %in% names(adjusted_data)){
   
 }
 
-# problem: some datasets have the format yyyy-mm-ddTHH:MM:SS (some w/out :SS)
-
+# some datasets have the format yyyy-mm-ddTHH:MM:SS (some w/out :SS)
+# -> adjustment so they all have the same format
 if ('date_time' %in% names(adjusted_data)){
   if (all(!is.na(adjusted_data$date_time))){
     
-    date_formats = c('%Y-%m-%dT%H:%M', '%Y-%m-%dT%H:%M:%S')
+    date_formats = c('%Y-%m-%dT%H:%M', '%Y-%m-%dT%H:%M:%S') # try formats
     
     dates = adjusted_data$date_time
     # print old date
     print(dates[!is.na(dates)][1])
     
-    # adjust format (currently two are tried)
+    # adjust format (currently two formats are expected)
     dates = as.POSIXct(dates, tz = "UTC",
                        tryFormats = date_formats, 
     )
@@ -157,7 +162,7 @@ if ('date_time' %in% names(adjusted_data)){
 }
 
 # adjusting data with nutrients -----------------------------------------------
-# problem: # 0.00000 values in data of nutrients instead of 0 ? 
+# problem: # 0.00000 values in data > change to NA 
 if (data_collection == "nutrients"){
   
   # check the variable for the nutrients
@@ -190,8 +195,8 @@ if (dim(adjusted_data)[1] > 0){
     
     create_new_main_file = TRUE
   
-    # the first ever read dat frame will be the start
-    # add empty variables for all aliase which are missing
+    # the first ever read data.frame will be the initial
+    # add empty variables for all aliases which are missing
     adjusted_data[ , alias_var_names[is.na(data_var_names)]] = NA
     
     # specify order of variables
@@ -209,10 +214,12 @@ if (dim(adjusted_data)[1] > 0){
     adjusted_data$X  = 1:(dim(adjusted_data)[1])
   
     # load existing main data file
-    main_data = read.csv(paste0(dir_name_collection, "/main_data",
-                                "/main_", data_collection, ".csv"))
+    main_data = read.table(paste0(dir_name_collection, "/main_data",
+                                "/main_", data_collection, ".csv"), 
+                          sep = sep_for_main_data, 
+                          header = TRUE)
     
-    # hecking fo rexisting ID
+    # checking whether ID exists in main file
     if (current_ID %in% main_data$ID){
       
       main_data = main_data[main_data$ID != current_ID, ]
@@ -258,18 +265,18 @@ if(!depth_availiable){
   
 }
 
-# also put the Question in front of text
+# also put the question in front of text
 text = paste0(text, "Want to update the main collection file?")
 
-
-#t = menu(c("yes", "no"), title=text)
+# currently user input is not used
+#t = menu(c("yes", "no"), title=text) 
 t = 1
 if (t == 1){update_main_file = TRUE} else {update_main_file = FALSE}
 
 
-# UPDATE MAIN META DATA -------
+# UPDATE MAIN META DATA FILE -------
 if (update_main_file){
-  
+  # add infos to meta data.frame
   meta_data$variables[ind_ID]   = paste0(names(only_data), collapse = ';;')
   meta_data$cruise[ind_ID]      = ""
   meta_data$r_file_path[ind_ID] = raw_file_path
@@ -283,26 +290,29 @@ if (update_main_file){
   
   if (create_new_main_file){
     
-    print('new')
+    print('New main file is created.')
     
     adjusted_data$X = 1:dim(adjusted_data)[1]
     
     # creating new table
-    write.csv(adjusted_data, paste0(dir_name_collection, "/main_data", 
+    write.table(adjusted_data, paste0(dir_name_collection, "/main_data", 
                                     "/main_", data_collection, ".csv"), 
-              row.names = F)
+              row.names = F, sep = sep_for_main_data, 
+              na= "NA")
     
   } else {
   
   # merging new loaded data with existing main data  
   main_data = assemble_data_frames(main_data, adjusted_data)
   
-  write.csv(main_data, paste0(dir_name_collection, "/main_data",
+  write.table(main_data, paste0(dir_name_collection, "/main_data",
                                   "/main_", data_collection, ".csv"), 
-            row.names = F)
+              row.names = F, sep = sep_for_main_data, 
+              na = "NA")
   }
   
-  write.csv(meta_data, file_name_meta_data, row.names = F)
+  write.table(meta_data, file_name_meta_data, row.names = F, 
+              sep = sep_for_main_data, na = "NA")
   
 }
 

@@ -3,7 +3,7 @@
 # R Version   4.2.1 (2022-06-23 ucrt)
 # R packages  /
 
-# miscellenoius functions
+# miscellaneous functions
 # -------------------------------------------------------------------------------
 
 # functions -----

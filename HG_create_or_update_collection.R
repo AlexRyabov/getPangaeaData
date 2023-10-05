@@ -1,17 +1,20 @@
-# date        2023-08-20
+# date        2023-10-05
 # project     
 # R Version   4.2.1 (2022-06-23 ucrt)
 # R packages  /
 
 # main file: create initial file collection from list or update main collection 
-# (one dataset)1
+# (one dataset)
 # -------------------------------------------------------------------------------
 
 rm(list = ls())
 
 # LOAD ONE DATA SET?
-add_one_dataset = FALSE # set to FALSE -> infos from alias_table_per_collection.xlsx 
+add_one_dataset = FALSE # set to FALSE -> infos from variable_names_in_datasets.xlsx 
                         # and dataset_links.xlsx are used
+
+sep_for_main_data = "\t"
+max_depth = 120         # only data with depth above -120m will be used
 
 if (add_one_dataset){
   
@@ -23,11 +26,11 @@ if (add_one_dataset){
   from_tab_data= TRUE     # bool, loads from .tab data downloaded from pangaea website
   
   dataset_file = "ARK-XXIV_2_chl-a.tab" # should be in raw_data/archive; must be 
-                                      # specified if from_tab_data == TRUE
+                                        # specified if from_tab_data == TRUE
   
-  data_collection = ""  # name of collection, "CTD", "Chlorophyll", "nutrients" "<custom>"
-  alias_var_names = ""  # names of variable in main collection file
-  data_var_names  = ""  # names of varoables in dataset (set to NA if a variable does 
+  #data_collection = ""  # name of collection, "CTD", "Chlorophyll", "nutrients" "<custom>"
+  #alias_var_names = ""  # names of variable in main collection file
+  #data_var_names  = ""  # names of varoables in dataset (set to NA if a variable does 
                         # not exist in dataset)
   
   # some meta data
@@ -74,7 +77,6 @@ if (add_one_dataset){
   #                   "Cond [mS/cm]",
   #                   "Sal")
   
-  max_depth        = 120 # only data with depth above -120m will be used
   update_main_file = TRUE
   
   source("HG_add_one_dataset.R")
@@ -84,14 +86,12 @@ if (add_one_dataset){
 } else {
   
   # specifications
-  max_depth        = 120 # only data with depth above -120m will be used
   update_main_file = TRUE
   
   from_ID       = TRUE
   from_tab_data = FALSE
   
   # use the table for getting all data sets
-  
   # necessary IDs
   ID_list = readxl::read_xlsx("dataset_links.xlsx")
   
